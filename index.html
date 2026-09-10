@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Robot Sensor Simulator</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>🤖 ROBOT SENSOR SIMULATOR</h1>
+        <p>Sensor → Controller → Actuator</p>
+    </div>
+
+    <div class="main-container">
+
+        <!-- 3D SIMULATION -->
+        <div id="simulation"></div>
+
+        <!-- CONTROL PANEL -->
+        <div class="control-panel">
+
+            <h2>Robot System</h2>
+
+            <!-- DISTANCE INPUT -->
+            <div class="distance-setting">
+
+                <h3>📏 Detection Distance</h3>
+
+                <div class="distance-input">
+
+                    <input
+                        type="number"
+                        id="distanceInput"
+                        value="30"
+                        min="1"
+                        max="200"
+                    >
+
+                    <span>cm</span>
+
+                </div>
+
+                <p class="small-text">
+                    Enter any distance from 1–200 cm
+                </p>
+
+            </div>
+
+
+            <!-- SENSOR -->
+            <div class="box sensor">
+
+                <h3>👁️ SENSOR</h3>
+
+                <p>
+                    Distance:
+                    <span id="distance">--</span> cm
+                </p>
+
+                <p id="sensorStatus">
+                    Waiting...
+                </p>
+
+            </div>
+
+
+            <div class="arrow">↓</div>
+
+
+            <!-- CONTROLLER -->
+            <div class="box controller">
+
+                <h3>🧠 CONTROLLER</h3>
+
+                <p id="controllerStatus">
+                    Waiting...
+                </p>
+
+            </div>
+
+
+            <div class="arrow">↓</div>
+
+
+            <!-- ACTUATOR -->
+            <div class="box actuator">
+
+                <h3>⚙️ ACTUATOR</h3>
+
+                <p id="motorStatus">
+                    Motor OFF
+                </p>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+            <div class="buttons">
+
+                <button onclick="startSimulation()">
+                    ▶ START
+                </button>
+
+                <button onclick="resetSimulation()">
+                    ↻ RESET
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

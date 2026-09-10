@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f1ff;
+    color: #202040;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    text-align: center;
+    padding: 20px;
+    background: white;
+}
+
+.header h1 {
+    font-size: 32px;
+}
+
+.header p {
+    margin-top: 6px;
+    font-size: 18px;
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.main-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+
+/* =========================
+   3D SIMULATION
+========================= */
+
+#simulation {
+    flex: 1;
+    height: 600px;
+    background: #dfe8ff;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+
+/* =========================
+   CONTROL PANEL
+========================= */
+
+.control-panel {
+    width: 320px;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.control-panel h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+/* =========================
+   DISTANCE SETTING
+========================= */
+
+.distance-setting {
+    background: #fff4d6;
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.distance-setting h3 {
+    margin-bottom: 10px;
+}
+
+
+/* =========================
+   DISTANCE INPUT
+========================= */
+
+.distance-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#distanceInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.distance-input span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.small-text {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+
+/* =========================
+   SYSTEM BOXES
+========================= */
+
+.box {
+    padding: 15px;
+    border-radius: 15px;
+    margin: 10px 0;
+}
+
+.sensor {
+    background: #e8f4ff;
+}
+
+.controller {
+    background: #eee8ff;
+}
+
+.actuator {
+    background: #e8fff1;
+}
+
+.box h3 {
+    margin-bottom: 8px;
+}
+
+
+/* =========================
+   ARROWS
+========================= */
+
+.arrow {
+    text-align: center;
+    font-size: 25px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.85;
+}
