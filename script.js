@@ -2,7 +2,7 @@ let scene;
 let camera;
 let renderer;
 
-let robot;
+let car;
 let obstacle;
 
 let running = false;
@@ -12,13 +12,10 @@ let running = false;
 // SIMULATION SETTINGS
 // ===============================
 
-// Speed of robot on screen
-const robotSpeed = 0.04;
+const carSpeed = 0.04;
 
-// Virtual sensor distance
 let currentDistance = 30;
 
-// Distance selected by user
 let detectionDistance = 30;
 
 
@@ -46,8 +43,8 @@ function createScene() {
 
     camera.position.set(
         0,
-        8,
-        12
+        7,
+        13
     );
 
     camera.lookAt(
@@ -94,40 +91,76 @@ function createScene() {
     const ambientLight =
         new THREE.AmbientLight(
             0xffffff,
-            0.5
+            0.6
         );
 
     scene.add(ambientLight);
 
 
-    // FLOOR
+    // ============================
+    // ROAD
+    // ============================
 
-    const floorGeometry =
+    const roadGeometry =
         new THREE.PlaneGeometry(
-            20,
+            12,
             20
         );
 
-    const floorMaterial =
+    const roadMaterial =
         new THREE.MeshStandardMaterial({
-            color: 0xffffff
+            color: 0x555555
         });
 
-    const floor =
+    const road =
         new THREE.Mesh(
-            floorGeometry,
-            floorMaterial
+            roadGeometry,
+            roadMaterial
         );
 
-    floor.rotation.x =
+    road.rotation.x =
         -Math.PI / 2;
 
-    scene.add(floor);
+    scene.add(road);
 
 
-    // CREATE ROBOT
+    // ============================
+    // ROAD LINES
+    // ============================
 
-    createRobot();
+    for (let z = -8; z <= 8; z += 3) {
+
+        const lineGeometry =
+            new THREE.BoxGeometry(
+                0.15,
+                0.02,
+                1
+            );
+
+        const lineMaterial =
+            new THREE.MeshStandardMaterial({
+                color: 0xffffff
+            });
+
+        const line =
+            new THREE.Mesh(
+                lineGeometry,
+                lineMaterial
+            );
+
+        line.position.set(
+            0,
+            0.02,
+            z
+        );
+
+        scene.add(line);
+    }
+
+
+    // CREATE CAR
+
+    createCar();
 
 
     // CREATE OBSTACLE
@@ -142,27 +175,29 @@ function createScene() {
 
 
 // ===============================
-// CREATE ROBOT
+// CREATE CAR
 // ===============================
 
-function createRobot() {
+function createCar() {
 
-    robot =
+    car =
         new THREE.Group();
 
 
-    // BODY
+    // ============================
+    // CAR BODY
+    // ============================
 
     const bodyGeometry =
         new THREE.BoxGeometry(
-            2,
-            1,
-            2
+            2.4,
+            0.7,
+            3.5
         );
 
     const bodyMaterial =
         new THREE.MeshStandardMaterial({
-            color: 0x6c63ff
+            color: 0x4f46e5
         });
 
     const body =
@@ -171,41 +206,98 @@ function createRobot() {
             bodyMaterial
         );
 
-    body.position.y = 1;
+    body.position.y = 0.65;
 
-    robot.add(body);
+    car.add(body);
 
 
-    // HEAD
+    // ============================
+    // CAR TOP
+    // ============================
 
-    const headGeometry =
+    const topGeometry =
         new THREE.BoxGeometry(
-            1.4,
-            1,
-            1.4
+            1.7,
+            0.6,
+            1.7
         );
 
-    const headMaterial =
+    const topMaterial =
         new THREE.MeshStandardMaterial({
-            color: 0xffffff
+            color: 0xbfd7ff
         });
 
-    const head =
+    const top =
         new THREE.Mesh(
-            headGeometry,
-            headMaterial
+            topGeometry,
+            topMaterial
         );
 
-    head.position.y = 2;
+    top.position.set(
+        0,
+        1.25,
+        0.1
+    );
 
-    robot.add(head);
+    car.add(top);
 
 
-    // SENSOR
+    // ============================
+    // WHEELS
+    // ============================
+
+    const wheelGeometry =
+        new THREE.CylinderGeometry(
+            0.45,
+            0.45,
+            0.35,
+            20
+        );
+
+    const wheelMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x222222
+        });
+
+
+    const wheelPositions = [
+        [-1.25, 0.45, 1.1],
+        [1.25, 0.45, 1.1],
+        [-1.25, 0.45, -1.1],
+        [1.25, 0.45, -1.1]
+    ];
+
+
+    wheelPositions.forEach(
+        function(position) {
+
+            const wheel =
+                new THREE.Mesh(
+                    wheelGeometry,
+                    wheelMaterial
+                );
+
+            wheel.rotation.z =
+                Math.PI / 2;
+
+            wheel.position.set(
+                position[0],
+                position[1],
+                position[2]
+            );
+
+            car.add(wheel);
+        }
+    );
+
+
+    // ============================
+    // FRONT SENSOR
+    // ============================
 
     const sensorGeometry =
         new THREE.SphereGeometry(
-            0.2,
+            0.25,
             16,
             16
         );
@@ -223,22 +315,71 @@ function createRobot() {
 
     sensor.position.set(
         0,
-        2,
-        -0.8
+        0.8,
+        -1.85
     );
 
-    robot.add(sensor);
+    car.add(sensor);
 
 
-    // ROBOT START POSITION
+    // ============================
+    // HEADLIGHTS
+    // ============================
 
-    robot.position.set(
+    const lightGeometry =
+        new THREE.BoxGeometry(
+            0.45,
+            0.25,
+            0.1
+        );
+
+    const lightMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xffffaa
+        });
+
+
+    const leftLight =
+        new THREE.Mesh(
+            lightGeometry,
+            lightMaterial
+        );
+
+    leftLight.position.set(
+        -0.65,
+        0.75,
+        -1.78
+    );
+
+    car.add(leftLight);
+
+
+    const rightLight =
+        new THREE.Mesh(
+            lightGeometry,
+            lightMaterial
+        );
+
+    rightLight.position.set(
+        0.65,
+        0.75,
+        -1.78
+    );
+
+    car.add(rightLight);
+
+
+    // ============================
+    // START POSITION
+    // ============================
+
+    car.position.set(
         0,
         0,
         5
     );
 
-    scene.add(robot);
+    scene.add(car);
 }
 
 
@@ -250,14 +391,14 @@ function createObstacle() {
 
     const geometry =
         new THREE.BoxGeometry(
-            3,
-            2,
-            1
+            3.5,
+            2.2,
+            1.2
         );
 
     const material =
         new THREE.MeshStandardMaterial({
-            color: 0xff8a65
+            color: 0xff7043
         });
 
     obstacle =
@@ -268,7 +409,7 @@ function createObstacle() {
 
     obstacle.position.set(
         0,
-        1,
+        1.1,
         -2
     );
 
@@ -277,13 +418,10 @@ function createObstacle() {
 
 
 // ===============================
-// ROBOT LOGIC
+// CAR LOGIC
 // ===============================
 
-function updateRobot() {
-
-    // If simulation isn't running,
-    // do nothing.
+function updateCar() {
 
     if (!running) {
         return;
@@ -291,10 +429,10 @@ function updateRobot() {
 
 
     // ============================
-    // MOVE ROBOT
+    // MOVE CAR
     // ============================
 
-    robot.position.z -= robotSpeed;
+    car.position.z -= carSpeed;
 
 
     // ============================
@@ -304,14 +442,14 @@ function updateRobot() {
     currentDistance -= 0.5;
 
 
-    // Prevent negative distance
-
     if (currentDistance < 0) {
         currentDistance = 0;
     }
 
 
-    // Display current sensor distance
+    // ============================
+    // DISPLAY DISTANCE
+    // ============================
 
     document.getElementById(
         "distance"
@@ -355,13 +493,11 @@ function updateRobot() {
     else {
 
         // ========================
-        // STOP ROBOT
+        // STOP CAR
         // ========================
 
         running = false;
 
-
-        // Show exact selected distance
 
         currentDistance =
             detectionDistance;
@@ -386,7 +522,7 @@ function updateRobot() {
         document.getElementById(
             "controllerStatus"
         ).innerText =
-            "🛑 STOP ROBOT";
+            "🛑 STOP CAR";
 
 
         // ACTUATOR
@@ -405,15 +541,11 @@ function updateRobot() {
 
 function startSimulation() {
 
-    // Get input box
-
     const input =
         document.getElementById(
             "distanceInput"
         );
 
-
-    // Convert input to number
 
     const enteredDistance =
         Number(input.value);
@@ -438,7 +570,7 @@ function startSimulation() {
 
 
     // ============================
-    // SET DETECTION DISTANCE
+    // SET DISTANCE
     // ============================
 
     detectionDistance =
@@ -446,21 +578,18 @@ function startSimulation() {
 
 
     // ============================
-    // STARTING SENSOR DISTANCE
+    // STARTING DISTANCE
     // ============================
-
-    // Robot starts 30 cm farther
-    // than selected distance.
 
     currentDistance =
         detectionDistance + 30;
 
 
     // ============================
-    // RESET ROBOT POSITION
+    // RESET CAR
     // ============================
 
-    robot.position.set(
+    car.position.set(
         0,
         0,
         5
@@ -473,8 +602,6 @@ function startSimulation() {
 
     running = true;
 
-
-    // Initial display
 
     document.getElementById(
         "distance"
@@ -510,22 +637,16 @@ function resetSimulation() {
     running = false;
 
 
-    // Reset robot
-
-    robot.position.set(
+    car.position.set(
         0,
         0,
         5
     );
 
 
-    // Reset distance
-
     currentDistance =
         detectionDistance;
 
-
-    // Reset display
 
     document.getElementById(
         "distance"
@@ -562,7 +683,7 @@ function animate() {
         animate
     );
 
-    updateRobot();
+    updateCar();
 
     renderer.render(
         scene,
@@ -572,7 +693,7 @@ function animate() {
 
 
 // ===============================
-// START EVERYTHING
+// START
 // ===============================
 
 createScene();
