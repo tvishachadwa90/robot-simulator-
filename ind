@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Robot Component Simulator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>🤖 ROBOT COMPONENT SIMULATOR</h1>
+
+        <p>
+            SENSOR → CONTROLLER → ACTUATOR
+        </p>
+
+    </header>
+
+
+    <!-- CONTROL PANEL -->
+
+    <section class="control-panel">
+
+        <label for="distanceInput">
+            Enter Object Distance
+        </label>
+
+        <div class="input-area">
+
+            <input
+                type="number"
+                id="distanceInput"
+                min="1"
+                max="200"
+                placeholder="Example: 50"
+            >
+
+            <span>cm</span>
+
+            <button onclick="startSimulation()">
+                START SIMULATION
+            </button>
+
+        </div>
+
+        <p class="range">
+            Allowed distance: 1 – 200 cm
+        </p>
+
+    </section>
+
+
+    <!-- STATUS -->
+
+    <div class="status" id="status">
+
+        Enter a distance and start the simulation.
+
+    </div>
+
+
+    <!-- SIMULATION AREA -->
+
+    <section class="simulation">
+
+        <!-- Distance ruler -->
+
+        <div class="ruler">
+
+            <span>0 cm</span>
+            <span>50 cm</span>
+            <span>100 cm</span>
+            <span>150 cm</span>
+            <span>200 cm</span>
+
+        </div>
+
+
+        <!-- Ground -->
+
+        <div class="ground"></div>
+
+
+        <!-- Robot -->
+
+        <div class="robot" id="robot">
+
+            🤖
+
+            <span class="robot-label">
+                ROBOT
+            </span>
+
+        </div>
+
+
+        <!-- Sensor beam -->
+
+        <div class="sensor-beam" id="sensorBeam">
+
+        </div>
+
+
+        <!-- Car -->
+
+        <div class="car" id="car">
+
+            🚗
+
+            <span class="car-label">
+                OBJECT
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- COMPONENT INFORMATION -->
+
+    <section class="information">
+
+
+        <!-- SENSOR -->
+
+        <div class="info-card">
+
+            <div class="icon">
+                👁️
+            </div>
+
+            <h2>SENSOR</h2>
+
+            <p id="sensorInfo">
+
+                Waiting for object...
+
+            </p>
+
+        </div>
+
+
+        <!-- CONTROLLER -->
+
+        <div class="info-card">
+
+            <div class="icon">
+                🧠
+            </div>
+
+            <h2>CONTROLLER</h2>
+
+            <p id="controllerInfo">
+
+                Waiting for sensor data...
+
+            </p>
+
+        </div>
+
+
+        <!-- ACTUATOR -->
+
+        <div class="info-card">
+
+            <div class="icon">
+                ⚙️
+            </div>
+
+            <h2>ACTUATOR</h2>
+
+            <p id="actuatorInfo">
+
+                Waiting for command...
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Sense → Think → Act
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
