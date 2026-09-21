@@ -1,127 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Autonomous Car Sensor Simulator</title>
-
+    <title>Robot Component Simulator</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
 
-    <div class="header">
-        <h1>🚗 AUTONOMOUS CAR SENSOR SIMULATOR</h1>
-        <p>Sensor → Controller → Actuator</p>
+<header>
+    <div>
+        <h1>ROBOT COMPONENT SIMULATOR</h1>
+        <p>Sense • Think • Act</p>
     </div>
 
-    <div class="main-container">
+    <div class="header-status">
+        <span class="status-dot"></span>
+        SYSTEM READY
+    </div>
+</header>
 
-        <!-- 3D SIMULATION -->
-        <div id="simulation"></div>
+<main>
 
-        <!-- CONTROL PANEL -->
-        <div class="control-panel">
+    <!-- CONTROL PANEL -->
+    <section class="control-panel">
 
-            <h2>Car System</h2>
+        <div class="input-box">
+            <label>ENTER DISTANCE</label>
 
-            <!-- DISTANCE -->
-            <div class="distance-setting">
+            <div class="input-row">
+                <input
+                    type="number"
+                    id="distanceInput"
+                    min="1"
+                    max="200"
+                    placeholder="1 - 200"
+                >
 
-                <h3>📏 Detection Distance</h3>
+                <span>cm</span>
 
-                <div class="distance-input">
+                <button onclick="startSimulation()">
+                    START SIMULATION
+                </button>
 
-                    <input
-                        type="number"
-                        id="distanceInput"
-                        value="30"
-                        min="1"
-                        max="200"
-                    >
+                <button class="reset" onclick="resetSimulation()">
+                    RESET
+                </button>
+            </div>
 
-                    <span>cm</span>
+            <p class="instruction">
+                Enter a distance between 1 cm and 200 cm.
+            </p>
+        </div>
+
+        <div class="current-status">
+            <span>STATUS</span>
+            <strong id="statusText">READY</strong>
+        </div>
+
+    </section>
+
+
+    <!-- SIMULATION -->
+    <section class="simulation-card">
+
+        <div class="simulation-header">
+            <h2>ROBOTICS TEST TRACK</h2>
+            <div id="distanceDisplay">Distance: -- cm</div>
+        </div>
+
+        <div class="track" id="track">
+
+            <!-- Buildings -->
+            <div class="building b1"></div>
+            <div class="building b2"></div>
+            <div class="building b3"></div>
+            <div class="building b4"></div>
+
+            <!-- Moon -->
+            <div class="moon"></div>
+
+            <!-- Road -->
+            <div class="road">
+
+                <div class="lane-line line1"></div>
+                <div class="lane-line line2"></div>
+                <div class="lane-line line3"></div>
+
+                <!-- BLUE START MARKER -->
+                <div class="start-marker">
+                    START
+                </div>
+
+                <!-- Sensor beam -->
+                <div class="sensor-beam" id="sensorBeam"></div>
+
+                <!-- Robot Car -->
+                <div class="car" id="robotCar">
+
+                    <div class="car-roof"></div>
+
+                    <div class="window front-window"></div>
+                    <div class="window back-window"></div>
+
+                    <div class="headlight left"></div>
+                    <div class="headlight right"></div>
+
+                    <div class="wheel wheel1"></div>
+                    <div class="wheel wheel2"></div>
+                    <div class="wheel wheel3"></div>
+                    <div class="wheel wheel4"></div>
+
+                    <div class="sensor-dot"></div>
 
                 </div>
 
-                <p class="small-text">
-                    Enter any distance from 1–200 cm
-                </p>
+
+                <!-- Motorcycle -->
+                <div class="motorcycle" id="motorcycle">
+
+                    <div class="bike-body"></div>
+
+                    <div class="bike-seat"></div>
+
+                    <div class="handle"></div>
+
+                    <div class="bike-wheel front"></div>
+                    <div class="bike-wheel back"></div>
+
+                    <div class="bike-light"></div>
+
+                </div>
+
+                <!-- Stop marker -->
+                <div class="stop-marker" id="stopMarker">
+                    STOP
+                </div>
 
             </div>
+        </div>
+
+    </section>
 
 
-            <!-- SENSOR -->
-            <div class="box sensor">
+    <!-- LIVE COMPONENTS -->
+    <section class="components">
 
-                <h3>👁️ SENSOR</h3>
+        <h2>LIVE ROBOT COMPONENTS</h2>
 
-                <p>
-                    Distance:
-                    <span id="distance">--</span> cm
-                </p>
+        <div class="component-grid">
 
-                <p id="sensorStatus">
-                    Waiting...
-                </p>
-
+            <div class="component-card" id="sensorCard">
+                <div class="component-icon">📡</div>
+                <h3>SENSOR</h3>
+                <p>Detects the motorcycle</p>
+                <strong id="sensorStatus">WAITING</strong>
             </div>
 
-
-            <div class="arrow">↓</div>
-
-
-            <!-- CONTROLLER -->
-            <div class="box controller">
-
-                <h3>🧠 CONTROLLER</h3>
-
-                <p id="controllerStatus">
-                    Waiting...
-                </p>
-
+            <div class="component-card" id="controllerCard">
+                <div class="component-icon">🧠</div>
+                <h3>CONTROLLER</h3>
+                <p>Processes the distance</p>
+                <strong id="controllerStatus">WAITING</strong>
             </div>
 
-
-            <div class="arrow">↓</div>
-
-
-            <!-- ACTUATOR -->
-            <div class="box actuator">
-
-                <h3>⚙️ ACTUATOR</h3>
-
-                <p id="motorStatus">
-                    Motor OFF
-                </p>
-
-            </div>
-
-
-            <!-- BUTTONS -->
-            <div class="buttons">
-
-                <button onclick="startSimulation()">
-                    ▶ START
-                </button>
-
-                <button onclick="resetSimulation()">
-                    ↻ RESET
-                </button>
-
+            <div class="component-card" id="actuatorCard">
+                <div class="component-icon">⚙️</div>
+                <h3>ACTUATOR</h3>
+                <p>Controls the car movement</p>
+                <strong id="actuatorStatus">WAITING</strong>
             </div>
 
         </div>
 
-    </div>
+    </section>
 
-    <script src="script.js"></script>
+
+    <!-- FLOW -->
+    <section class="flow-section">
+
+        <h2>HOW THE ROBOT WORKS</h2>
+
+        <div class="flow">
+
+            <div class="flow-box">
+                <span>01</span>
+                <h3>SENSE</h3>
+                <p>Sensor detects obstacle</p>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="flow-box">
+                <span>02</span>
+                <h3>THINK</h3>
+                <p>Controller processes data</p>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="flow-box">
+                <span>03</span>
+                <h3>ACT</h3>
+                <p>Actuator stops the car</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    Robot Component Explainer & Simulation • AI & Data Science
+</footer>
+
+<script src="script.js"></script>
 
 </body>
-
 </html>

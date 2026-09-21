@@ -1,209 +1,233 @@
+const car = document.getElementById("robotCar");
+const motorcycle = document.getElementById("motorcycle");
+const sensorBeam = document.getElementById("sensorBeam");
+const stopMarker = document.getElementById("stopMarker");
+
+const statusText = document.getElementById("statusText");
+const distanceDisplay = document.getElementById("distanceDisplay");
+
+const sensorCard = document.getElementById("sensorCard");
+const controllerCard = document.getElementById("controllerCard");
+const actuatorCard = document.getElementById("actuatorCard");
+
+const sensorStatus = document.getElementById("sensorStatus");
+const controllerStatus = document.getElementById("controllerStatus");
+const actuatorStatus = document.getElementById("actuatorStatus");
+
+
 function startSimulation() {
 
-    // =========================
-    // GET ELEMENTS
-    // =========================
+    const distance = Number(
+        document.getElementById("distanceInput").value
+    );
 
-    let distanceInput =
-        document.getElementById("distanceInput");
-
-    let distance =
-        Number(distanceInput.value);
-
-    let robot =
-        document.getElementById("robot");
-
-    let car =
-        document.getElementById("car");
-
-    let sensorBeam =
-        document.getElementById("sensorBeam");
-
-    let status =
-        document.getElementById("status");
-
-    let sensorInfo =
-        document.getElementById("sensorInfo");
-
-    let controllerInfo =
-        document.getElementById("controllerInfo");
-
-    let actuatorInfo =
-        document.getElementById("actuatorInfo");
-
-
-    // =========================
-    // CHECK INPUT
-    // =========================
-
-    if (
-        isNaN(distance) ||
-        distance < 1 ||
-        distance > 200
-    ) {
-
-        status.innerHTML =
-            "⚠️ Please enter a distance between 1 and 200 cm.";
-
+    if (!distance || distance < 1 || distance > 200) {
+        alert("Please enter a distance between 1 and 200 cm.");
         return;
-
     }
 
 
-    // =========================
-    // RESET INFORMATION
-    // =========================
+    // RESET VISUALS
 
-    sensorInfo.innerHTML =
-        "Detecting object...";
+    clearCards();
 
-    controllerInfo.innerHTML =
-        "Waiting for sensor data...";
+    car.style.left = "10%";
+    stopMarker.style.opacity = "0";
+    sensorBeam.style.width = "0";
+    sensorBeam.style.opacity = "0";
 
-    actuatorInfo.innerHTML =
-        "Waiting for command...";
+    distanceDisplay.innerText =
+        "Target stopping distance: " + distance + " cm";
 
-
-    // =========================
-    // CALCULATE CAR POSITION
-    // =========================
-
-    /*
-        Distance range:
-        1 cm → close to robot
-        200 cm → far from robot
-    */
-
-    let minimumPosition = 180;
-
-    let maximumPosition = 850;
+    statusText.innerText = "SCANNING";
 
 
-    /*
-        Convert 1–200 cm
-        into screen position.
-    */
+    /* =========================
+       STEP 1 - SENSOR
+       ========================= */
 
-    let carPosition =
-        minimumPosition +
-        ((distance - 1) / 199) *
-        (maximumPosition - minimumPosition);
+    setTimeout(() => {
 
+        sensorCard.classList.add("active");
 
-    // =========================
-    // MOVE CAR
-    // =========================
+        sensorStatus.innerText = "OBSTACLE DETECTED";
 
-    car.style.left =
-        carPosition + "px";
+        sensorBeam.style.width = "65%";
+        sensorBeam.style.opacity = "1";
 
+        statusText.innerText = "SENSOR ACTIVE";
 
-    // =========================
-    // SENSOR STAGE
-    // =========================
-
-    status.innerHTML =
-        "📡 SENSOR: Detecting object at "
-        + distance
-        + " cm";
+    }, 700);
 
 
-    sensorInfo.innerHTML =
-        "Object detected at <b>"
-        + distance
-        + " cm</b>.";
+    /* =========================
+       STEP 2 - CONTROLLER
+       ========================= */
+
+    setTimeout(() => {
+
+        controllerCard.classList.add("active");
+
+        controllerStatus.innerText =
+            "DISTANCE = " + distance + " CM";
+
+        statusText.innerText = "PROCESSING";
+
+    }, 2000);
 
 
-    // =========================
-    // SENSOR BEAM
-    // =========================
+    /* =========================
+       STEP 3 - CALCULATE STOP
+       ========================= */
 
-    let beamWidth =
-        carPosition - 100;
+    setTimeout(() => {
 
-    if (beamWidth < 0) {
+        /*
+        Convert 1–200 cm into a visual gap.
 
-        beamWidth = 0;
+        Small distance = car stops close.
+        Large distance = car stops farther away.
+        */
 
-    }
+        const minGap = 35;
+        const maxGap = 300;
 
-
-    sensorBeam.style.width =
-        beamWidth + "px";
-
-
-    // =========================
-    // CONTROLLER STAGE
-    // =========================
-
-    setTimeout(function () {
-
-        status.innerHTML =
-            "🧠 CONTROLLER: Processing sensor data...";
-
-
-        controllerInfo.innerHTML =
-            "Controller received "
-            + distance
-            + " cm and calculated the required movement.";
-
-    }, 1200);
-
-
-    // =========================
-    // ACTUATOR STAGE
-    // =========================
-
-    setTimeout(function () {
-
-        status.innerHTML =
-            "⚙️ ACTUATOR: Robot moving toward object...";
-
-
-        actuatorInfo.innerHTML =
-            "Motors activated. Robot is moving toward the object.";
+        const gap =
+            minGap +
+            ((distance - 1) / 199) *
+            (maxGap - minGap);
 
 
         /*
-            Robot stops 90px
-            before the car.
+        Motorcycle is around 82% of track width.
+        We calculate the car's final position
+        according to the selected distance.
         */
 
-        let robotPosition =
-            carPosition - 100;
+        const track =
+            document.getElementById("track");
+
+        const trackWidth =
+            track.clientWidth;
+
+        const motorcyclePosition =
+            trackWidth * 0.82;
+
+        const carWidth =
+            120;
 
 
-        // Robot cannot go behind starting point
+        let finalPosition =
+            motorcyclePosition - carWidth - gap;
 
-        if (robotPosition < 60) {
 
-            robotPosition = 60;
+        /*
+        Prevent the car from going
+        outside the starting area.
+        */
 
+        const minimumPosition =
+            trackWidth * 0.10;
+
+        if (finalPosition < minimumPosition) {
+            finalPosition = minimumPosition;
         }
 
 
-        robot.style.left =
-            robotPosition + "px";
+        /* Controller has decided the position */
+
+        stopMarker.style.left =
+            finalPosition + "px";
+
+        stopMarker.style.opacity = "1";
 
 
-    }, 2200);
+        controllerStatus.innerText =
+            "STOP AT " + distance + " CM";
 
 
-    // =========================
-    // STOP STAGE
-    // =========================
+        /* =========================
+           STEP 4 - ACTUATOR
+           ========================= */
 
-    setTimeout(function () {
+        setTimeout(() => {
 
-        status.innerHTML =
-            "🛑 ROBOT STOPPED — Target detected at "
-            + distance
-            + " cm.";
+            actuatorCard.classList.add("active");
+
+            actuatorStatus.innerText =
+                "BRAKING CAR";
+
+            statusText.innerText =
+                "CAR MOVING";
 
 
-        actuatorInfo.innerHTML =
-            "Robot stopped at the required position.";
+            car.style.left =
+                finalPosition + "px";
 
-    }, 4500);
 
+        }, 500);
+
+
+        /* =========================
+           STEP 5 - FINAL STOP
+           ========================= */
+
+        setTimeout(() => {
+
+            actuatorStatus.innerText =
+                "CAR STOPPED";
+
+            statusText.innerText =
+                "STOPPED";
+
+            sensorStatus.innerText =
+                "MOTORCYCLE DETECTED";
+
+            controllerStatus.innerText =
+                "SAFE DISTANCE: " + distance + " CM";
+
+        }, 3600);
+
+
+    }, 3000);
+}
+
+
+/* RESET */
+
+function resetSimulation() {
+
+    car.style.left = "10%";
+
+    stopMarker.style.opacity = "0";
+
+    sensorBeam.style.width = "0";
+    sensorBeam.style.opacity = "0";
+
+    distanceDisplay.innerText =
+        "Distance: -- cm";
+
+    statusText.innerText =
+        "READY";
+
+    clearCards();
+}
+
+
+/* CLEAR COMPONENT CARDS */
+
+function clearCards() {
+
+    sensorCard.classList.remove("active");
+    controllerCard.classList.remove("active");
+    actuatorCard.classList.remove("active");
+
+    sensorStatus.innerText =
+        "WAITING";
+
+    controllerStatus.innerText =
+        "WAITING";
+
+    actuatorStatus.innerText =
+        "WAITING";
 }
